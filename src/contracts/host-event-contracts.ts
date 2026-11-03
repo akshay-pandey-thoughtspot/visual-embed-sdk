@@ -213,6 +213,11 @@ export type HostFilterUpdateColumn =
  * The filter operator. Supply `operator`. A filter with no operator is
  * rejected at runtime, and passing both spellings silently discards the
  * `oper` one.
+ *
+ * Attribute columns filter by a list of values, so the range operators do
+ * not apply to them. On an attribute column, `LT`, `LE`, `GT`, `GE` and
+ * `BW_INC` each resolve to `IN` over the values you pass, and no error is
+ * raised. Ranges are evaluated only on measure and date columns.
  */
 export type HostFilterUpdateOperator =
     | {
