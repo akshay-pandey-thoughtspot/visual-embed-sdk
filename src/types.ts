@@ -9772,6 +9772,21 @@ export enum Action {
      */
     SpotterOnLiveboard = 'spotterOnLiveboard',
     /**
+     * The **Spotter** panel on an App. Hiding it removes the panel and the
+     * button that reopens it; disabling it keeps that button, inert.
+     *
+     * The panel only exists when the host opts in with
+     * `spotterExperienceVersion`. This action controls its visibility; it does
+     * not turn Spotter on.
+     * @version SDK: %NEXT_SDK_VERSION% | ThoughtSpot Cloud: 27.2.0.cl
+     * @example
+     * ```js
+     * hiddenActions: [Action.SpotterOnDataApp]
+     * disabledActions: [Action.SpotterOnDataApp]
+     * ```
+     */
+    SpotterOnDataApp = 'spotterOnDataApp',
+    /**
      * The **View explanation** button on Spotter answer cards, which opens the
      * Answer Verification experience in `SpotterEmbed` (and the deprecated
      * `ConversationEmbed`).

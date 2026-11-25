@@ -6,10 +6,13 @@ import {
     EmbedEvent,
     ErrorDetailsTypes,
     HostEvent,
+    Param,
 } from '../types';
 import { ERROR_MESSAGE } from '../errors';
 import { logger } from '../utils/logger';
+import { setParamIfDefined } from '../utils';
 import { reportHostEvent } from '../utils/hostEventTelemetry';
+import { SpotterExperienceVersion } from './spotter-utils';
 import { TsEmbed } from './ts-embed';
 import { DataAppControlError } from './data-app-control-error';
 import { HostEventRequest, TriggerData, TriggerResponse } from '../contracts/host-event-contracts';
@@ -60,6 +63,22 @@ export interface DataAppEmbedViewConfig {
      * ```
      */
     dataAppId: string;
+    /**
+     * The Spotter experience version to load for the Spotter panel shown
+     * within this embed. Without it the App shows no Spotter panel, whatever
+     * the ThoughtSpot instance is set to.
+     *
+     * Supported embed types: `DataAppEmbed`
+     * @version SDK: %NEXT_SDK_VERSION% | ThoughtSpot Cloud: 27.2.0.cl
+     * @example
+     * ```js
+     * const embed = new DataAppEmbed('#tsEmbed', {
+     *    dataAppId: '<app-id>',
+     *    spotterExperienceVersion: SpotterExperienceVersion.SPOTTER_2026_11,
+     * });
+     * ```
+     */
+    spotterExperienceVersion?: SpotterExperienceVersion;
 }
 
 /**
@@ -101,6 +120,16 @@ export class DataAppEmbed extends TsEmbed {
             config = { ...config, fullHeight: false } as DataAppEmbedViewConfig;
         }
         super(container, config);
+    }
+
+    protected getEmbedParamsObject() {
+        const params = this.getBaseQueryParams();
+        setParamIfDefined(
+            params,
+            Param.SpotterExperienceVersion,
+            this.viewConfig.spotterExperienceVersion,
+        );
+        return params;
     }
 
     private getDataAppPath(dataAppId: string): string {

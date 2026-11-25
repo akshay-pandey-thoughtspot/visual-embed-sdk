@@ -1,5 +1,6 @@
 import { DataAppEmbed, DataAppEmbedViewConfig } from './data-app';
 import { DataAppControlError } from './data-app-control-error';
+import { SpotterExperienceVersion } from './spotter-utils';
 import { AppEmbed, AppViewConfig } from './app';
 import { TsEmbed } from './ts-embed';
 import { getEmbedConfig } from './embedConfig';
@@ -171,6 +172,25 @@ describe('DataAppEmbed', () => {
             excludeRuntimeFiltersfromURL: true,
             excludeRuntimeParametersfromURL: true,
         });
+    });
+
+    // The App's own gate is the cluster flag plus this opt-in, so without the
+    // param the App shows no Spotter panel however the cluster is set.
+    it('sends the Spotter experience version the host opted in to', async () => {
+        const embed = newDataApp({
+            dataAppId: 'app-1',
+            spotterExperienceVersion: SpotterExperienceVersion.SPOTTER_2026_11,
+        });
+        await embed.render();
+        expect(getIFrameSrc()).toContain(
+            `spotterExperienceVersion=${SpotterExperienceVersion.SPOTTER_2026_11}`,
+        );
+    });
+
+    it('sends no Spotter experience version when the host does not opt in', async () => {
+        const embed = newDataApp({ dataAppId: 'app-1' });
+        await embed.render();
+        expect(getIFrameSrc()).not.toContain('spotterExperienceVersion=');
     });
 
     it('ignores fullHeight with a warning', () => {
